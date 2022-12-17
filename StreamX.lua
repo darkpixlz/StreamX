@@ -42,7 +42,7 @@ local Configuration = {
 			"https://del3.quantumpython.xyz"				-- DarkPixlz (FL)
 		}
 	},
-	Throttle			= 10,		-- % Streaming Throttle (x10 stud diff.)
+	Throttle		= 10,		-- % Streaming Throttle (x10 stud diff.)
 	UpdateDelay		= 6,			-- Second delay between updates (keep above 5)
 	EnableReuseComp	= true,		-- Enables duplicate computation (can normalize lag, at the cost of frequent spikes)
 	ChunkAmount		= 1000,		-- Amount of parts sent in each upload request
