@@ -42,7 +42,7 @@ local Configuration = {
 			"https://del3.quantumpython.xyz"				-- DarkPixlz (FL)
 		}
 	},
-	Throttle			= 10,		-- % Streaming Throttle (x10 stud diff.)
+	Throttle		= 10,		-- % Streaming Throttle (x10 stud diff.)
 	UpdateDelay		= 6,			-- Second delay between updates (keep above 5)
 	EnableReuseComp	= true,		-- Enables duplicate computation (can normalize lag, at the cost of frequent spikes)
 	ChunkAmount		= 1000,		-- Amount of parts sent in each upload request
@@ -122,8 +122,11 @@ local function MakeRequest(endpoint, data)
 	return { Success = s, Data = HTTP:JSONDecode(d) }
 end
 local function DeInitialize()
-	warn_("Deinitializing StreamX")
-	-- This doesn't do anything yet
+	players = game:GetService("Players"):GetChildren()
+	if #players < 1 then
+		warn_("Deinitializing StreamX")
+		-- This doesn't do anything yet
+	end
 end
 
 game:BindToClose(DeInitialize)
@@ -132,7 +135,7 @@ game.Players.PlayerRemoving:Connect(function(p)
 end)
 
 log("Initializing connection to StreamX ...")
-local InitReq = MakeRequest("init", { gameid = game.GameId, placever = game.PlaceVersion })
+local InitReq = MakeRequest("init", { gameid = game.PlaceId, placever = game.PlaceVersion })
 local AuthKey, NeedsUpload = InitReq.Data.key, InitReq.Data.upload
 
 log("Authentication key is " .. AuthKey)
@@ -167,7 +170,7 @@ if NeedsUpload then
 	log("Server requested upload, performing action!")
 	local sp, t0 = {}, time()
 	for _, p in pairs(Folder:GetDescendants()) do
-		if p:IsA("MeshPart") or p:IsA("Part") or p:IsA("BasePart") then
+		if p:IsA("MeshPart") or p:IsA("Part") or p:IsA("BasePart") or p:IsA("UnionOperation") then
 			table.insert(sp, Serial.serialize(p))
 			if #sp == C.ChunkAmount then
 				UploadParts(sp)
@@ -229,3 +232,5 @@ while task.wait() do  -- task.wait() because it looks cleaner then true lol
 	end
 	task.wait(C.UpdateDelay)
 end
+
+-- That's all folks!
